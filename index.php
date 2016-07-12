@@ -9,7 +9,7 @@ $factory = new \RandomLib\Factory;
 $generator = $factory->getMediumStrengthGenerator();
 //Iniciem sessió per inicialitzar el cross-doamin control del formulari
 session_start();
-$_SESSION["csrf_token"]=hash('sha512', $generator->generate(32));
+$_SESSION["csrf_token"] = hash('sha512', $generator->generate(32));
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +41,7 @@ $_SESSION["csrf_token"]=hash('sha512', $generator->generate(32));
             </div>
             <div class="row">
                 <div class="col-md-6" id="col-results">
-                  <div class="alert" id="result-messages"></div>
+                    <div class="alert" id="result-messages"></div>
                 </div>
                 <div class="col-md-6 botons">
                     <button id="desfes" class="btn btn-warning">Desfés</button>
@@ -56,50 +56,50 @@ $_SESSION["csrf_token"]=hash('sha512', $generator->generate(32));
         <script src="https://code.jquery.com/jquery-2.2.1.min.js" bintegrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00=" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
         <script>
-            $(function() {
+            $(function () {
                 var editor = ace.edit("editor");
                 editor.$blockScrolling = Infinity;
                 editor.setTheme("ace/theme/chrome");
                 editor.getSession().setMode("ace/mode/plain_text");
-                editor.getSession().on('change', function(e) {
+                editor.getSession().on('change', function (e) {
                     $('#desa').prop('disabled', false);
-		    $('#desfes').prop('disabled', false);
+                    $('#desfes').prop('disabled', false);
                 });
                 $.get("file.txt").done(function (data) {
                     editor.setValue(data);
-                    editor.gotoLine(editor.session.getLength() - 1);
+                    editor.gotoLine(editor.session.getLength());
                     editor.execCommand("gotolineend");
                 });
-                $('#desa').click(editor,function () {
+                $('#desa').click(editor, function () {
                     $.ajax({
                         method: "POST",
                         url: "srv.php",
-                        data: { action:'save' ,content: editor.getValue(), csrf_token: '<?php echo $_SESSION["csrf_token"]; ?>' },
-                        beforeSend : function() {
-                          $('#col-results').html('<div class="alert" id="result-messages"></div>')
+                        data: {action: 'save', content: editor.getValue(), csrf_token: '<?php echo $_SESSION["csrf_token"]; ?>'},
+                        beforeSend: function () {
+                            $('#col-results').html('<div class="alert" id="result-messages"></div>')
                         }
                     })
-                    .error(function( msg ) {
-                        $('#result-messages')
-                          .html('Hi ha hagut algun error')
-                          .addClass('alert-danger');
-                    })
-                    .success(function( msg ) {
-                        $('#result-messages')
-                          .html('S\'ha desat el fitxer')
-                          .addClass('alert-success');
-                        $('#desa').prop('disabled', true);
-			$('#desfes').prop('disabled', true);
-                    });
+                            .error(function (msg) {
+                                $('#result-messages')
+                                        .html('Hi ha hagut algun error')
+                                        .addClass('alert-danger');
+                            })
+                            .success(function (msg) {
+                                $('#result-messages')
+                                        .html('S\'ha desat el fitxer')
+                                        .addClass('alert-success');
+                                $('#desa').prop('disabled', true);
+                                $('#desfes').prop('disabled', true);
+                            });
                 });
-                $('#desfes').click(editor,function () {
-                    $.get("file.txt").done(editor,function (data) {
+                $('#desfes').click(editor, function () {
+                    $.get("file.txt").done(editor, function (data) {
                         editor.setValue(data);
                         editor.gotoLine(editor.session.getLength());
                         editor.execCommand("gotolineend");
                     });
                 })
-		.prop('disabled', true);
+                        .prop('disabled', true);
             });
         </script>
     </body>
